@@ -288,6 +288,17 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
 
         IState qBooleanSemiColon = new State("qBooleanSemiColon");
 
+        IState qIfI = new State("qIfI");
+        IState qIfF = new State("qIfF");
+        IState qIfPO = new State("qIfPO");
+        IState qIfV1 = new State("qIfV1");
+        IState qIfEqual1 = new State("qIfEqual1");
+        IState qIfEqual2 = new State("qIfEqual2");
+        IState qIfV2 = new State("qIfV2");
+        IState qIfPC = new State("qIfPC");
+        IState qIfBO = new State("qIfBO");
+        IState qIfBC = new State("qIfBC");
+
         qFinal.setFinal();
 
         qInitial.addTransition(q, null, null, '$');
@@ -309,15 +320,15 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
         qIntT.addTransition(qInt_, ' ', null, null);
 
         for (char l : letter) {
-            qInt_.addTransition(qInt_, l, null, null);
             qInt_.addTransition(qIntName, l, null, null);
+            qIntName.addTransition(qIntName, l, null, null);
         }
 
         qIntName.addTransition(qIntEqual, '=', null, null);
 
         for (char n : number) {
-            qIntEqual.addTransition(qIntEqual, n, null, null);
             qIntEqual.addTransition(qIntNumber, n, null, null);
+            qIntNumber.addTransition(qIntNumber, n, null, null);
         }
 
         qIntNumber.addTransition(qIntSemiColon, ';', null, null);
@@ -333,8 +344,8 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
         qBooleanN.addTransition(qBoolean_, ' ', null, null);
 
         for (char l : letter) {
-            qBoolean_.addTransition(qBoolean_, l, null, null);
             qBoolean_.addTransition(qBooleanName, l, null, null);
+            qBooleanName.addTransition(qBooleanName, l, null, null);
         }
 
         qBooleanName.addTransition(qBooleanEqual, '=', null, null);
@@ -354,7 +365,37 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
 
         qBooleanSemiColon.addTransition(qMainBC, '}', '{', null);
 
-        String w = "main(){boolean alexandre=false;}";
+        qMainInside.addTransition(qIfI, 'i', null, 'i');
+        qIfI.addTransition(qIfF, 'f', null, null);
+        qIfF.addTransition(qIfPO, '(', null, null);
+
+        for (char l : letter) {
+            qIfPO.addTransition(qIfV1, l, null, l);
+            qIfV1.addTransition(qIfV1, l, null, l);
+        }
+
+        qIfV1.addTransition(qIfEqual1, '=', null, null);
+        qIfEqual1.addTransition(qIfEqual2, '=', null, null);
+
+        for (char l : letter) {
+            qIfEqual2.addTransition(qIfV2, l, l, null);
+            qIfV2.addTransition(qIfV2, l, l, null);
+        }
+
+        qIfV2.addTransition(qIfPC, ')', 'i', null);
+        qIfPC.addTransition(qIfBO, '{', null, '{');
+
+        qIfBO.addTransition(qIfI, 'i', null, 'i');
+
+        for (char l : letter) {
+            qIfBO.addTransition(qIfBO, l, null, null);
+        }
+
+        qIfBO.addTransition(qIfBC,'}', '{', null);
+        qIfBC.addTransition(qMainBC,'}', '{', null);
+
+
+        String w = "main(){boolean alexa=false;}";
         IPDA pda = new PDA(qInitial, 'Z');
         Util.checkout(pda.run(w), w);
         System.out.println("*****************************");
