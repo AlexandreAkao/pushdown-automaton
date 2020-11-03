@@ -299,6 +299,16 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
         IState qIfBO = new State("qIfBO");
         IState qIfBC = new State("qIfBC");
 
+        IState qWhileW = new State("qWhileW");
+        IState qWhileH = new State("qWhileH");
+        IState qWhileI = new State("qWhileI");
+        IState qWhileL = new State("qWhileL");
+        IState qWhileE = new State("qWhileE");
+        IState qWhilePO = new State("qWhilePO");
+        IState qWhilePC = new State("qWhilePC");
+        IState qWhileBO = new State("qWhileBO");
+        IState qWhileBC = new State("qWhileBC");
+
         qFinal.setFinal();
 
         qInitial.addTransition(q, null, null, '$');
@@ -392,10 +402,37 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
         }
 
         qIfBO.addTransition(qIfBC,'}', '{', null);
+        qIfBC.addTransition(qIfBC,'}', '{', null);
         qIfBC.addTransition(qMainBC,'}', '{', null);
 
+        qIfBC.addTransition(qMainInside,null, null, null);
 
-        String w = "main(){boolean alexa=false;}";
+        qMainInside.addTransition(qWhileW, 'w', null, 'w');
+        qWhileW.addTransition(qWhileH, 'h', null, null);
+        qWhileH.addTransition(qWhileI, 'i', null, null);
+        qWhileI.addTransition(qWhileL, 'l', null, null);
+        qWhileL.addTransition(qWhileE, 'e', null, null);
+        qWhileE.addTransition(qWhilePO, '(', null, null);
+
+        for (char l : letter) {
+            qWhilePO.addTransition(qIfV1, l, null, l);
+        }
+
+        qIfV2.addTransition(qWhilePC, ')', 'w', null);
+        qWhilePC.addTransition(qWhileBO, '{', null, '{');
+        qWhileBO.addTransition(qWhileW, 'w', null, 'w');
+
+        for (char l : letter) {
+            qWhileBO.addTransition(qWhileBO, l, null, null);
+        }
+
+        qWhileBO.addTransition(qWhileBO, '}', '{', null);
+        qWhileBO.addTransition(qWhileBC, '}', '{', null);
+        qWhileBC.addTransition(qMainBC, '}', '{', null);
+
+        qWhileBC.addTransition(qMainInside,null, null, null);
+
+        String w = "main(){}";
         IPDA pda = new PDA(qInitial, 'Z');
         Util.checkout(pda.run(w), w);
         System.out.println("*****************************");
