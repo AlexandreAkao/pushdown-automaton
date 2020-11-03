@@ -35,7 +35,7 @@ public class PDA implements IPDA {
                 log(w, k, a);
 //              end
 
-                newStates = merge(newStates, s.nextStates(ch));
+                newStates = merge(newStates, a);
 //                logActiveStates(newStates);
 
                 newStates = eclosure(newStates);
@@ -46,7 +46,7 @@ public class PDA implements IPDA {
             if (states.size() == 0) break;
         }
 
-        System.out.println("--------------------");
+        System.out.println("==================");
         logActiveStates(states);
 
         return valid(states);// verificar se existe algum estado final em states
@@ -67,6 +67,9 @@ public class PDA implements IPDA {
         for (ActiveState s : qs) {
 
             Set<ActiveState> a = s.nextStates(null);
+//            System.out.println("================");
+//            logActiveStates(qs);
+//            logActiveStates(a);
             Set<ActiveState> b = eclosure(a);
 
             r = merge(r, a);
@@ -97,7 +100,7 @@ public class PDA implements IPDA {
         System.out.println("}" + w.substring(k));
     }
 
-    public void logActiveStates(Set<ActiveState> qs) {
+    public static void logActiveStates(Set<ActiveState> qs) {
         if (qs.isEmpty()) {
             System.out.println("[]");
             return;

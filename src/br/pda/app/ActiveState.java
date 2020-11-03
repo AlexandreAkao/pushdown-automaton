@@ -46,14 +46,25 @@ public class ActiveState {
             IEdge e = t.getEdge();
 
             if (ch == null) {
-                if (e.getC() == null && e.getPop() == null) {
-                    Stack<Character> newStack = (Stack<Character>) this.getStack().clone();
+                if (e.getC() == null) {
+                    if (e.getPop() == null) {
+                        Stack<Character> newStack = (Stack<Character>) this.getStack().clone();
 
-                    if (e.getPush() != null) {
-                        newStack.push(e.getPush());
+                        if (e.getPush() != null) {
+                            newStack.push(e.getPush());
+                        }
+
+                        r.add(new ActiveState(t.getState(), newStack));
+                    } else if (e.getPop().equals(this.getStack().peek())) {
+                        Stack<Character> newStack = (Stack<Character>) this.getStack().clone();
+                        newStack.pop();
+
+                        if (e.getPush() != null) {
+                            newStack.push(e.getPush());
+                        }
+
+                        r.add(new ActiveState(t.getState(), newStack));
                     }
-
-                    r.add(new ActiveState(t.getState(), newStack));
                 }
             } else {
                 if (e.getC() != null && e.getC().equals(ch)) {
@@ -76,6 +87,26 @@ public class ActiveState {
                         r.add(new ActiveState(t.getState(), newStack));
                     }
                 }
+//                else if (e.getC() == null) {
+//                    if (e.getPop() != null && e.getPop().equals(this.getStack().peek())) {
+//                        Stack<Character> newStack = (Stack<Character>) this.getStack().clone();
+//                        newStack.pop();
+//
+//                        if (e.getPush() != null) {
+//                            newStack.push(e.getPush());
+//                        }
+//
+//                        r.add(new ActiveState(t.getState(), newStack));
+//                    } else if (e.getPop() == null) {
+//                        Stack<Character> newStack = (Stack<Character>) this.getStack().clone();
+//
+//                        if (e.getPush() != null) {
+//                            newStack.push(e.getPush());
+//                        }
+//
+//                        r.add(new ActiveState(t.getState(), newStack));
+//                    }
+//                }
             }
         }
 

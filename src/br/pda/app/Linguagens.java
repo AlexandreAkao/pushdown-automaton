@@ -61,10 +61,7 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
         qOpenPar.addTransition(qOpenPar, ' ', null, null);
         qCloseKey.addTransition(qCloseKey, ' ', null, null);
 
-        String w = "if(teste) {"
-                + "  if(a==b){ if(x){ if(joao) { faco algo }}"
-                + "  }"
-                + "}";
+        String w = "if(aa==aa){}";
 
         IPDA pda = new PDA(q, 'Z');
 //        pda.makeLog();
@@ -153,16 +150,12 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
 
         q0.addTransition(q1, null, null, '$');
 
-        q1.addTransition(q1, 'a', null, 'a');
-        q1.addTransition(q1, 'b', null, 'b');
-//        for (char c : sigma)
-//            q1.addTransition(q1, c, null, c);
+        for (char c : sigma)
+            q1.addTransition(q1, c, null, c);
         q1.addTransition(q2, null, null, null);
 
-        q2.addTransition(q2, 'a', 'a', null);
-        q2.addTransition(q2, 'b', 'b', null);
-//        for (char c : sigma)
-//            q2.addTransition(q2, c, c, null);
+        for (char c : sigma)
+            q2.addTransition(q2, c, c, null);
         q2.addTransition(q3, null, '$', null);
 
         String w = "abaa";
@@ -239,6 +232,130 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
          */
         String w = "aap";
         IPDA pda = new PDA(q0, 'Z');
+        Util.checkout(pda.run(w), w);
+        System.out.println("*****************************");
+    }
+
+    public static void syntax() {
+        System.out.println("*****************************\nProcessamento de Syntax:");
+        char[] letter = "ABCDEFGHIJKLMNOPQRSTUVXYWZabcdefghijklmnopqrstuvxywz".toCharArray();
+        char[] number = "0123456789".toCharArray();
+
+        IState qInitial = new State("qInitial");
+        IState q = new State("q");
+        IState qM = new State("qM");
+        IState qA = new State("qA");
+        IState qI = new State("qI");
+        IState qN = new State("qN");
+        IState qMainPO = new State("qMainPO"); //qMainParenthesesOpen
+        IState qMainPC = new State("qMainPC"); //qMainParenthesesClose
+        IState qMainBO = new State("qMainBO"); //qMainBracketsOpen
+        IState qMainBC = new State("qMainBO"); //qMainBracketsOpen
+        IState qFinal = new State("qFinal"); //qMainBracketsOpen
+
+        IState qMainInside = new State("qMainInside");
+
+        IState qIntI = new State("qIntI");
+        IState qIntN = new State("qIntN");
+        IState qIntT = new State("qIntT");
+        IState qInt_ = new State("qInt_");
+        IState qIntName = new State("qIntName");
+        IState qIntEqual = new State("qIntEqual");
+        IState qIntNumber = new State("qIntNumber");
+        IState qIntSemiColon = new State("qIntSemiColon");
+
+        IState qBooleanB = new State("qBooleanB");
+        IState qBooleanO1 = new State("qBooleanO1");
+        IState qBooleanO2 = new State("qBooleanO2");
+        IState qBooleanL = new State("qBooleanL");
+        IState qBooleanE = new State("qBooleanE");
+        IState qBooleanA = new State("qBooleanA");
+        IState qBooleanN = new State("qBooleanN");
+        IState qBoolean_ = new State("qBoolean_");
+        IState qBooleanName = new State("qBooleanName");
+        IState qBooleanEqual = new State("qBooleanEqual");
+
+        IState qBooleanTT = new State("qBooleanFT");
+        IState qBooleanTR = new State("qBooleanFR");
+        IState qBooleanTU = new State("qBooleanFU");
+        IState qBooleanTE = new State("qBooleanFE");
+
+        IState qBooleanFF = new State("qBooleanFF");
+        IState qBooleanFA = new State("qBooleanFA");
+        IState qBooleanFL = new State("qBooleanFL");
+        IState qBooleanFS = new State("qBooleanFS");
+        IState qBooleanFE = new State("qBooleanFE");
+
+        IState qBooleanSemiColon = new State("qBooleanSemiColon");
+
+        qFinal.setFinal();
+
+        qInitial.addTransition(q, null, null, '$');
+        q.addTransition(qM, 'm', null, null);
+        qM.addTransition(qA, 'a', null, null);
+        qA.addTransition(qI, 'i', null, null);
+        qI.addTransition(qN, 'n', null, null);
+        qN.addTransition(qMainPO, '(', null, null);
+        qMainPO.addTransition(qMainPC, ')', null, null);
+        qMainPC.addTransition(qMainBO, '{', null, '{');
+        qMainBO.addTransition(qMainBC, '}', '{', null);
+        qMainBC.addTransition(qFinal, null, '$', null);
+
+        qMainBO.addTransition(qMainInside, null, null, null);
+
+        qMainInside.addTransition(qIntI, 'i', null, null);
+        qIntI.addTransition(qIntN, 'n', null, null);
+        qIntN.addTransition(qIntT, 't', null, null);
+        qIntT.addTransition(qInt_, ' ', null, null);
+
+        for (char l : letter) {
+            qInt_.addTransition(qInt_, l, null, null);
+            qInt_.addTransition(qIntName, l, null, null);
+        }
+
+        qIntName.addTransition(qIntEqual, '=', null, null);
+
+        for (char n : number) {
+            qIntEqual.addTransition(qIntEqual, n, null, null);
+            qIntEqual.addTransition(qIntNumber, n, null, null);
+        }
+
+        qIntNumber.addTransition(qIntSemiColon, ';', null, null);
+        qIntSemiColon.addTransition(qMainBC, '}', '{', null);
+
+        qMainInside.addTransition(qBooleanB, 'b', null, null);
+        qBooleanB.addTransition(qBooleanO1, 'o', null, null);
+        qBooleanO1.addTransition(qBooleanO2, 'o', null, null);
+        qBooleanO2.addTransition(qBooleanL, 'l', null, null);
+        qBooleanL.addTransition(qBooleanE, 'e', null, null);
+        qBooleanE.addTransition(qBooleanA, 'a', null, null);
+        qBooleanA.addTransition(qBooleanN, 'n', null, null);
+        qBooleanN.addTransition(qBoolean_, ' ', null, null);
+
+        for (char l : letter) {
+            qBoolean_.addTransition(qBoolean_, l, null, null);
+            qBoolean_.addTransition(qBooleanName, l, null, null);
+        }
+
+        qBooleanName.addTransition(qBooleanEqual, '=', null, null);
+
+        qBooleanEqual.addTransition(qBooleanTT, 't', null, null);
+        qBooleanTT.addTransition(qBooleanTR, 'r', null, null);
+        qBooleanTR.addTransition(qBooleanTU, 'u', null, null);
+        qBooleanTU.addTransition(qBooleanTE, 'e', null, null);
+        qBooleanTE.addTransition(qBooleanSemiColon, ';', null, null);
+
+        qBooleanEqual.addTransition(qBooleanFF, 'f', null, null);
+        qBooleanFF.addTransition(qBooleanFA, 'a', null, null);
+        qBooleanFA.addTransition(qBooleanFL, 'l', null, null);
+        qBooleanFL.addTransition(qBooleanFS, 's', null, null);
+        qBooleanFS.addTransition(qBooleanFE, 'e', null, null);
+        qBooleanFE.addTransition(qBooleanSemiColon, ';', null, null);
+
+        qBooleanSemiColon.addTransition(qMainBC, '}', '{', null);
+
+        String w = "main(){boolean alexandre=false;}";
+        IPDA pda = new PDA(qInitial, 'Z');
         Util.checkout(pda.run(w), w);
         System.out.println("*****************************");
     }
