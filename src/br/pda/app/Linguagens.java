@@ -3,6 +3,7 @@ package br.pda.app;
 import br.pda.interfaces.IPDA;
 import br.pda.interfaces.IState;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -239,7 +240,7 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
         System.out.println("*****************************");
     }
 
-    public static void syntax() {
+    public static void syntax() throws IOException {
         System.out.println("*****************************\nProcessamento de Syntax:");
         char[] letter = "ABCDEFGHIJKLMNOPQRSTUVXYWZabcdefghijklmnopqrstuvxywz".toCharArray();
         char[] number = "0123456789".toCharArray();
@@ -337,6 +338,8 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
 
         for (IState s : qs) {
             s.addTransition(s, '\n', null, null);
+            s.addTransition(s, '\r', null, null);
+            s.addTransition(s, ' ', null, null);
         }
 
         qFinal.setFinal();
@@ -500,23 +503,23 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
         qForBC.addTransition(qForBC, '}', '{', null);
         qForBC.addTransition(qMainBC, '}', '{', null);
 
-
-        String w =
-        "main(){\n" +
-            "while(a==a){\n" +
-                "int a;\n" +
-                "boolean b;\n" +
-                "int a=1;\n" +
-                "if(a==a){\n" +
-                    "int a=1;\n" +
-                    "int a=1;\n" +
-                    "int a=1;\n" +
-                    "for(int a=1;a==a;a++){\n" +
-                        "int b=2;\n" +
-                    "}\n" +
-                "}\n" +
-            "}\n" +
-        "}\n";
+        String w = Util.readFile("source.txt");
+//        String w =
+//        "main(){\n" +
+//            "while(a==a){\n" +
+//                "int a;\n" +
+//                "boolean b;\n" +
+//                "int a=1;\n" +
+//                "if(a==a){\n" +
+//                    "int a=1;\n" +
+//                    "int a=1;\n" +
+//                    "int a=1;\n" +
+//                    "for(int a=1;a==a;a++){\n" +
+//                        "int b=2;\n" +
+//                    "}\n" +
+//                "}\n" +
+//            "}\n" +
+//        "}\n";
 
         IPDA pda = new PDA(qInitial, 'Z');
         Util.checkout(pda.run(w), w);

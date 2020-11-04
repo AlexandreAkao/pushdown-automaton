@@ -1,0 +1,16 @@
+main(){
+    while(a==a){
+        int asadasd;
+        boolean b;
+        int a=13211;
+        if(a==a){
+            int a=1;
+            int a=1;
+            int a=1;
+            for(int a=1;a==a;a++){
+                if(a==a){}
+                int b=2;
+            }
+        }
+    }
+}

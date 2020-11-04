@@ -4,6 +4,10 @@ import br.pda.interfaces.IEdge;
 import br.pda.interfaces.IState;
 import br.pda.interfaces.ITransition;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class Util {
 
     public static boolean testAB(Character a, Character b) {
@@ -24,5 +28,11 @@ public class Util {
             System.out.println("reconheceu: " + w);
         else
             System.out.println("Não reconheceu: " + w);
+    }
+
+    public static String readFile(String fileName) throws IOException {
+        String content = new String(Files.readAllBytes(Paths.get(fileName)));
+
+        return content;
     }
 }
