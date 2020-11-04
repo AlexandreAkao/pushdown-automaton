@@ -3,6 +3,7 @@ package br.pda.app;
 import br.pda.interfaces.IPDA;
 import br.pda.interfaces.IState;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,7 +62,9 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
         qOpenPar.addTransition(qOpenPar, ' ', null, null);
         qCloseKey.addTransition(qCloseKey, ' ', null, null);
 
-        String w = "if(aa==aa){}";
+        String w = "if(aa==aa){\n" +
+                "if(a==a){}\n" +
+                "}";
 
         IPDA pda = new PDA(q, 'Z');
 //        pda.makeLog();
@@ -321,6 +324,20 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
         IState qForIncrementP1 = new State("qForIncrementP1");
         IState qForIncrementP2 = new State("qForIncrementP2");
 
+        List<IState> qs = Arrays.asList(
+                qInitial, q, qM, qA, qI, qN, qMainPO, qMainPC, qMainBO, qMainBC, qFinal, qMainInside,                                                   //Main
+                qIntI, qIntN, qIntT, qInt_, qIntName, qIntEqual, qIntNumber, qIntSemiColon,                                                             //Int
+                qBooleanB, qBooleanO1, qBooleanO2, qBooleanL, qBooleanE, qBooleanA, qBooleanN, qBoolean_, qBooleanName,                                 //Boolean
+                qBooleanEqual, qBooleanTT, qBooleanTR, qBooleanTU, qBooleanTE,                                                                          //Boolean - true
+                qBooleanFF, qBooleanFA, qBooleanFL, qBooleanFS, qBooleanFE, qBooleanSemiColon,                                                          //Boolean - false
+                qIfI, qIfF, qIfPO, qIfV1, qIfEqual1, qIfEqual2, qIfV2, qIfPC, qIfBO, qIfBC,                                                             //If
+                qWhileW, qWhileH, qWhileI, qWhileL, qWhileE, qWhilePO, qWhilePC, qWhileBO, qWhileBC,                                                    //While
+                qForF, qForO, qForR, qForPO, qForPC, qForBO, qForBC, qForIncrementSemiColon, qForIncrement, qForIncrementP1, qForIncrementP2            //For
+        );
+
+        for (IState s : qs) {
+            s.addTransition(s, '\n', null, null);
+        }
 
         qFinal.setFinal();
 
@@ -358,7 +375,7 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
 
         qIntNumber.addTransition(qIntSemiColon, ';', null, null);
         qIntSemiColon.addTransition(qMainBC, '}', '{', null);
-        qIntSemiColon.addTransition(qMainInside,null, null, null);
+        qIntSemiColon.addTransition(qMainInside, null, null, null);
 
         for (char l : letter) {
             qIntSemiColon.addTransition(qIfV1, l, null, l);
@@ -395,7 +412,7 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
         qBooleanFE.addTransition(qBooleanSemiColon, ';', null, null);
 
         qBooleanSemiColon.addTransition(qMainBC, '}', '{', null);
-        qBooleanSemiColon.addTransition(qMainInside,null, null, null);
+        qBooleanSemiColon.addTransition(qMainInside, null, null, null);
 
         qMainInside.addTransition(qIfI, 'i', null, 'i');
         qIfI.addTransition(qIfF, 'f', null, null);
@@ -426,11 +443,11 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
             qIfBO.addTransition(qIfBO, l, null, null);
         }
 
-        qIfBO.addTransition(qIfBC,'}', '{', null);
-        qIfBC.addTransition(qIfBC,'}', '{', null);
-        qIfBC.addTransition(qMainBC,'}', '{', null);
+        qIfBO.addTransition(qIfBC, '}', '{', null);
+        qIfBC.addTransition(qIfBC, '}', '{', null);
+        qIfBC.addTransition(qMainBC, '}', '{', null);
 
-        qIfBC.addTransition(qMainInside,null, null, null);
+        qIfBC.addTransition(qMainInside, null, null, null);
 
         qMainInside.addTransition(qWhileW, 'w', null, 'w');
         qWhileW.addTransition(qWhileH, 'h', null, null);
@@ -455,13 +472,13 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
         qWhileBO.addTransition(qWhileBC, '}', '{', null);
         qWhileBO.addTransition(qMainInside, null, null, null);
         qWhileBC.addTransition(qMainBC, '}', '{', null);
-        qWhileBC.addTransition(qMainInside,null, null, null);
+        qWhileBC.addTransition(qMainInside, null, null, null);
 
         qMainInside.addTransition(qForF, 'f', null, null);
         qForF.addTransition(qForO, 'o', null, null);
         qForO.addTransition(qForR, 'r', null, null);
-        qForR.addTransition(qForPC, '(', null, null);
-        qForPC.addTransition(qIntI, 'i', null, null);
+        qForR.addTransition(qForPO, '(', null, null);
+        qForPO.addTransition(qIntI, 'i', null, null);
 
         for (char l : letter) {
             qForIncrementSemiColon.addTransition(qForIncrement, l, null, null);
@@ -478,28 +495,28 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
         }
 
         qForBO.addTransition(qForBC, '}', '{', null);
-        qForBO.addTransition(qMainInside,null, null, null);
-        qForBO.addTransition(qForF,'f', null, null);
+        qForBO.addTransition(qMainInside, null, null, null);
+        qForBO.addTransition(qForF, 'f', null, null);
         qForBC.addTransition(qForBC, '}', '{', null);
         qForBC.addTransition(qMainBC, '}', '{', null);
 
 
         String w =
-        "main(){" +
-            "while(a==a){" +
-                "int a;" +
-                "boolean b;" +
-                "int a=1;" +
-                "if(a==a){" +
-                    "int a=1;" +
-                    "int a=1;" +
-                    "int a=1;" +
-                    "for(int a=1;a==a;a++){" +
-                        "int b=2;" +
-                    "}" +
-                "}" +
-            "}" +
-        "}";
+        "main(){\n" +
+            "while(a==a){\n" +
+                "int a;\n" +
+                "boolean b;\n" +
+                "int a=1;\n" +
+                "if(a==a){\n" +
+                    "int a=1;\n" +
+                    "int a=1;\n" +
+                    "int a=1;\n" +
+                    "for(int a=1;a==a;a++){\n" +
+                        "int b=2;\n" +
+                    "}\n" +
+                "}\n" +
+            "}\n" +
+        "}\n";
 
         IPDA pda = new PDA(qInitial, 'Z');
         Util.checkout(pda.run(w), w);
