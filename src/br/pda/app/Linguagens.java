@@ -348,6 +348,7 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
             qIntName.addTransition(qIntName, l, null, null);
         }
 
+        qIntName.addTransition(qIntSemiColon, ';', null, null);
         qIntName.addTransition(qIntEqual, '=', null, null);
 
         for (char n : number) {
@@ -377,6 +378,7 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
             qBooleanName.addTransition(qBooleanName, l, null, null);
         }
 
+        qBooleanName.addTransition(qBooleanSemiColon, ';', null, null);
         qBooleanName.addTransition(qBooleanEqual, '=', null, null);
 
         qBooleanEqual.addTransition(qBooleanTT, 't', null, null);
@@ -485,8 +487,8 @@ public class Linguagens {// br.unifor.app.PDA = (Q, Σ, δ, {qi}, F)
         String w =
         "main(){" +
             "while(a==a){" +
-                "int a=1;" +
-                "int a=1;" +
+                "int a;" +
+                "boolean b;" +
                 "int a=1;" +
                 "if(a==a){" +
                     "int a=1;" +
